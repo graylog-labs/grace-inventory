@@ -5,25 +5,15 @@ undefine TF_VAR_master_account_id
 undefine TF_VAR_master_role_name
 export backend_key := grace_integration_testing_inventory_lambda.tfstate
 
-.PHONY: check apply plan validate init destroy
-check:
-ifeq ($(strip $(backend_bucket)),)
-	@echo "backend_bucket must be provided"
-	@exit 1
-endif
-ifeq ($(strip $(TF_VAR_appenv)),)
-	@echo "TF_VAR_appenv must be provided"
-	@exit 1
-else
-	@echo "appenv: $(TF_VAR_appenv)"
-endif
-ifeq ($(strip $(backend_key)),)
-	@echo "backend_key must be provided"
-	@exit 1
-endif
+.PHONY: apply plan validate init destroy test
 
 destroy: init
 	terraform destroy -auto-approve
+
+test: init 
+	apk add --no-cache python3-dev gcc libressl-dev musl-dev libffi-dev
+	pip3 install --upgrade pip setuptools flask "moto[server]"
+	go test -v ./...
 
 apply: plan
 	terraform apply -auto-approve
@@ -35,7 +25,9 @@ validate: init
 	terraform validate
 	terrascan --location . --tests all
 
-init: check
+init: create_files
+	terraform init
+
+create_files:
 	[[ -d ../release ]] || mkdir ../release
 	[[ -e ../release/grace-inventory-lambda.zip ]] || touch ../release/grace-inventory-lambda.zip
-	terraform init -backend-config="bucket=$(backend_bucket)" -backend-config="key=$(backend_key)"

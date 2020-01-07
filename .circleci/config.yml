@@ -2,7 +2,7 @@ version: 2
 jobs:
   validate_terraform:
     environment:
-        AWS_DEFAULT_REGION: us-east-1
+      AWS_DEFAULT_REGION: us-east-1
     docker:
       - image: hashicorp/terraform:light
     steps:
@@ -25,6 +25,20 @@ jobs:
       - run:
           name: Check Terraform configurations with tflint
           command: find . -name ".terraform" -prune -o -type f -name "*.tf" -exec dirname {} \;|sort -u | while read m; do (cd "$m" && tflint && echo "√ $m") || exit 1 ; done
+  test_terraform:
+    environment:
+      AWS_DEFAULT_REGION: us-east-1
+    docker:
+      - image: hashicorp/terraform:full
+    steps:
+      - checkout
+      - run:
+          name: Install make and curl
+          command: apk add --update make curl
+      - run:
+          name: Test Terraform
+          command: |
+            make test_terraform
   lint_handler:
     environment:
       AWS_DEFAULT_REGION: us-east-1
@@ -60,6 +74,9 @@ workflows:
   build:
     jobs:
       - validate_terraform
+      - test_terraform:
+          requires:
+            - validate_terraform
       - lint_handler
       - test_handler
       - release_handler:
