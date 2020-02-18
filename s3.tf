@@ -1,5 +1,5 @@
 resource "aws_s3_bucket" "bucket" {
-  bucket        = local.app_name
+  bucket        = var.s3_bucket_name
   acl           = "private"
   force_destroy = true
 
@@ -8,8 +8,8 @@ resource "aws_s3_bucket" "bucket" {
   }
 
   logging {
-    target_bucket = local.logging_bucket
-    target_prefix = "${local.app_name}-logs/"
+    target_bucket = var.s3_logging_bucket_name
+    target_prefix = "${var.s3_logging_bucket_prefix}/"
   }
 
   server_side_encryption_configuration {

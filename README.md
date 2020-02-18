@@ -147,10 +147,13 @@ include the following in your root terraform module:
 
 ```
 module "example_self" {
-  source       = "github.com/GSA/grace-inventory?ref=v0.1.3"
-  source_file  = "../../release/grace-inventory-lambda.zip"
-  appenv       = "environment"
-  project_name = "your-project"
+  source                   = "github.com/GSA/grace-inventory?ref=v0.1.3"
+  source_file              = "../../release/grace-inventory-lambda.zip"
+  appenv                   = "environment"
+  project_name             = "your-project"
+  s3_bucket_name           = "your-project-inventory"
+  s3_logging_bucket_name   = "your-project-inventory-logs"
+  s3_logging_bucket_prefix = "inventory"
 }
 ```
 

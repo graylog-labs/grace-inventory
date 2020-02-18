@@ -58,3 +58,19 @@ variable "project_name" {
   default     = "grace"
 }
 
+variable "s3_bucket_name" {
+  type        = string
+  description = "(required) Name of the S3 bucket where the reports are saved"
+}
+
+variable "s3_logging_bucket_name" {
+  type        = string
+  description = "(required) Name of the S3 bucket where the access logs are saved"
+}
+
+variable "s3_logging_bucket_prefix" {
+  type        = string
+  description = "(required) Path prefix for the S3 bucket where the access logs are saved"
+}
+
+
