@@ -1,3 +1,7 @@
+locals {
+  useAccessLogging = length(var.access_logging_bucket) > 0 ? [1] : []
+}
+
 resource "aws_s3_bucket" "bucket" {
   bucket        = var.s3_bucket_name
   acl           = "private"
@@ -33,4 +37,13 @@ resource "aws_s3_bucket" "bucket" {
   tags = {
     Name = "${upper(var.project_name)} Inventory Report"
   }
+}
+
+resource "aws_s3_bucket_public_access_block" "bucket" {
+  bucket = aws_s3_bucket.bucket.id
+
+  block_public_acls       = true
+  ignore_public_acls      = true
+  block_public_policy     = true
+  restrict_public_buckets = true
 }
