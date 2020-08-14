@@ -1,6 +1,6 @@
-locals {
-  useAccessLogging = length(var.access_logging_bucket) > 0 ? [1] : []
-}
+# locals {
+#   useAccessLogging = length(var.access_logging_bucket) > 0 ? [1] : []
+# }
 
 resource "aws_s3_bucket" "bucket" {
   bucket        = var.s3_bucket_name
