@@ -30,7 +30,7 @@ resource "aws_s3_bucket" "bucket" {
     enabled = true
 
     expiration {
-      days = 7
+      days = 365
     }
   }
 
